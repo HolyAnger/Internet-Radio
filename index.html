@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Radio</title>
+</head>
+
+<body>
+<header>
+    <div id="wrapper">
+        <h1>Radio</h1>
+        <audio id = 'player' src="http://online-radioroks.tavrmedia.ua/RadioROKS" controls autoplay></audio>
+        <button class="exit" onClick =" setTimeout( function() { navigator.app.exitApp(); });  navigator.vibrate(100);"></button>
+    </div>
+</header>
+    <div id="main">
+        <img src="img/music.jpg" alt="">
+        <span id="current">Text</span>
+        <button class="control-buttons previous" onclick="prev()"></button>
+       <button class="control-buttons minus" onclick="minus()"></button>
+       <button class="control-buttons switcher"></button>
+       <button class="control-buttons plus" onclick="plus()"></button>
+        <button class="control-buttons next" onclick="next()"></button>
+        <div id="info-block">
+            <span class = "number">asd</span>
+            <span class = "volume">Volume:1.0</span>
+        </div>
+    </div>
+
+
+
+
+<script type="text/javascript" src="cordova.js"></script>
+<script src=" js/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/js.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+        var RadioWave;
+
+        RadioWave = function(name, src){
+            this.name = name;
+            this.src = src;
+        };
+
+        var st1, st2, st3, st4, st5, st6, st7, st8, st9, st10;
+
+        var wave = document.getElementById('current');
+
+        var song = document.getElementById('player');
+
+        var plus = document.getElementsByClassName("plus");
+
+        var minus = document.getElementsByClassName("minus");
+
+        var stop = document.getElementsByClassName("stop");
+
+
+        x = 0;
+        $( ".switcher" ).click(function() {
+            if(x==0) {
+                $(this).css('background-image', 'url("img/play.png")');
+                x += 1;
+                song.pause();
+            }
+            else if(x==1){
+                $(this).css('background-image', 'url("img/stop.png")');
+                x-=1;
+                song.play();
+            }
+
+        });
+
+        function plus(){
+            song.volume+=0.1;
+
+
+        }
+        function minus(){
+            song.volume-=0.1;
+
+        }
+
+
+
+        st1 = new RadioWave('RadioRoks', 'http://online-radioroks.tavrmedia.ua/RadioROKS');
+        st2 = new RadioWave('HitFM', 'http://online-hitfm.tavrmedia.ua/HitFM');
+        st3 = new RadioWave('RadioMelodia',  'http://melodia.ipfm.net/RadioMelodia');
+        st4 = new RadioWave('ListenFM',  'http://listen.rpfm.ru:9000/premium128');
+        st5 = new RadioWave('RadioGroup(EuroPaplus)', 'http://cast.radiogroup.com.ua:8000/europaplus');
+        st6 = new RadioWave('RadioGroup(Retro)', 'http://cast.radiogroup.com.ua:8000/retro');
+        st7 = new RadioWave('RadioGroup(JamFM)', 'http://cast.radiogroup.com.ua:8000/jamfm');
+        st8 = new RadioWave('RusRadio', 'http://online-rusradio.tavrmedia.ua/RusRadio');
+        st9 = new RadioWave('Luxnet', ' http://icecastlv.luxnet.ua/lux');
+        st10 = new RadioWave('ZaycevFM', 'https://zaycevfm.cdnvideo.ru/ZaycevFM_pop_48.mp3');
+
+
+
+        wave.innerHTML = st1.name;
+
+
+        var m = [st1, st2, st3, st4, st5, st6, st7, st8, st9, st10];
+        var currentST = 0;
+
+        var htmlCurSt = document.getElementsByClassName('number');
+        htmlCurSt[0].innerHTML = "[" + (currentST + 1 )  +   "/10]";
+
+
+
+        function next(){
+            if(currentST>=9)
+                currentST=9;
+            else{
+                ++currentST;
+                song.src = m[currentST].src;
+                wave.innerHTML = m[currentST].name;
+            }
+            htmlCurSt[0].innerHTML = "[" + (currentST + 1 )  +   "/10]";
+
+
+        }
+        function prev(){
+            if(currentST<=0)
+                currentST=0;
+            else {
+                --currentST;
+                song.src = m[currentST].src;
+                wave.innerHTML = m[currentST].name;
+            }
+            htmlCurSt[0].innerHTML = "[" + (currentST + 1 )  +   "/10]";
+        }
+
+        var vol = document.getElementsByClassName('volume');
+        var stringVol = "Volume:";
+
+        plus[0].onclick = function(){
+            song.volume+=0.1;
+            vol[0].innerHTML = stringVol + song.volume.toFixed(1);
+
+        };
+        minus[0].onclick = function(){
+            song.volume-=0.1;
+            vol[0].innerHTML = stringVol + song.volume.toFixed(1);
+        };
+
+
+
+
+    </script>
